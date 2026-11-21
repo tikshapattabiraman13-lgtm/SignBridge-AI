@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SignBridge AI</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Segoe UI, sans-serif
+        }
+
+        body {
+            margin: 0;
+            background: #f3f7fb;
+            color: #1e293b
+        }
+
+        nav,
+        header,
+        footer {
+            padding: 20px 7%
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            background: white;
+            align-items: center;
+            box-shadow: 0 2px 10px #0001
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #0f4c81
+        }
+
+        .logo span {
+            color: #00a896
+        }
+
+        nav a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #334155;
+            font-weight: 600
+        }
+
+        .hero {
+            padding: 80px 7%;
+            display: flex;
+            gap: 35px;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(120deg, #eaf3fc, #e4f8f4)
+        }
+
+        .hero div {
+            max-width: 600px
+        }
+
+        .hero h1 {
+            font-size: clamp(36px, 5vw, 50px);
+            color: #0f3557
+        }
+
+        .hero h1 span {
+            color: #00a896
+        }
+
+        .hero p {
+            line-height: 1.8;
+            color: #526174
+        }
+
+        .art {
+            background: white;
+            border-radius: 22px;
+            padding: 45px;
+            text-align: center;
+            font-size: 65px;
+            box-shadow: 0 10px 30px #0f4c8118
+        }
+
+        .art p {
+            font-size: 15px
+        }
+
+        section {
+            padding: 65px 7%
+        }
+
+        .center {
+            text-align: center;
+            margin-bottom: 35px
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px #0001;
+            border-top: 4px solid #0f4c81
+        }
+
+        .card:nth-child(2) {
+            border-color: #00a896
+        }
+
+        .card p {
+            line-height: 1.7;
+            color: #64748b
+        }
+
+        .btn {
+            display: inline-block;
+            background: #0f4c81;
+            color: white;
+            padding: 12px 19px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 12px
+        }
+
+        .btn:hover {
+            background: #00a896
+        }
+
+        .about {
+            text-align: center;
+            background: white;
+            color: #64748b;
+            line-height: 1.8
+        }
+
+        footer {
+            text-align: center;
+            background: #0f3557;
+            color: white;
+            line-height: 1.8
+        }
+
+        @media(max-width:700px) {
+            .hero {
+                display: block;
+                text-align: center
+            }
+
+            .art {
+                margin-top: 30px
+            }
+
+            .cards {
+                grid-template-columns: 1fr
+            }
+
+            nav a {
+                margin-left: 8px;
+                font-size: 13px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="logo">🌉 SignBridge <span>AI</span></div>
+        <div><a href="index.html">Home</a><a href="#features">Features</a><a href="#about">About</a></div>
+    </nav>
+    <header class="hero">
+        <div>
+            <p>✨ AI-POWERED INCLUSIVE EDUCATION</p>
+            <h1>Breaking Communication Barriers <span>Through AI</span></h1>
+            <p>SignBridge AI is a two-way classroom communication prototype designed to connect teachers and students
+                through speech recognition, Indian Sign Language concepts and hand tracking technology.</p><a
+                class="btn" href="#features">Explore Communication Tools →</a>
+        </div>
+        <div class="art">🤝🌍<p>Communication For Everyone</p>
+        </div>
+    </header>
+    <section id="features">
+        <div class="center">
+            <h2>Choose a Communication Mode</h2>
+            <p>Select a mode to open its working prototype.</p>
+        </div>
+        <div class="cards">
+            <div class="card">
+                <h2>🎙️ Teacher → Student</h2>
+                <h3>Speech-to-Sign Demo</h3>
+                <p>Use the microphone or enter text. The prototype identifies supported keywords and displays an
+                    ISL-style gloss with emoji animation.</p><a class="btn" href="teacher.html">Open Teacher Mode →</a>
+            </div>
+            <div class="card">
+                <h2>🤟 Student → Teacher</h2>
+                <h3>Hand Tracking & Voice Demo</h3>
+                <p>Enable the webcam to view hand landmarks, or use demo buttons to send sample messages through browser
+                    voice output.</p><a class="btn" href="student.html">Open Student Mode →</a>
+            </div>
+        </div>
+    </section>
+    <section class="about" id="about">
+        <h2>About SignBridge AI</h2>
+        <p>Our goal is to reduce communication barriers in classrooms. This prototype demonstrates speech recognition,
+            keyword matching, webcam hand-landmark tracking and text-to-speech. Full ISL vocabulary recognition and a
+            true 3D signing avatar are future development features.</p>
+    </section>
+    <footer>🌉 SignBridge AI<br>Breaking Barriers. Connecting People. Empowering Education.<br>© 2026 SignBridge AI
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Teacher Mode | SignBridge AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Segoe UI, sans-serif
+        }
+
+        body {
+            margin: 0;
+            background: #f0f4f8;
+            color: #1e293b
+        }
+
+        header {
+            background: linear-gradient(135deg, #0f4c81, #00a896);
+            color: white;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap
+        }
+
+        header a {
+            color: white;
+            text-decoration: none
+        }
+
+        .wrap {
+            max-width: 900px;
+            margin: 35px auto;
+            padding: 0 18px
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px #0001
+        }
+
+        h2 {
+            color: #0f4c81
+        }
+
+        .stage {
+            margin: 20px 0;
+            background: #0f172a;
+            color: white;
+            min-height: 230px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 15px
+        }
+
+        .avatar {
+            font-size: 75px
+        }
+
+        .gloss {
+            margin-top: 12px;
+            background: #164e63;
+            padding: 8px 12px;
+            border-radius: 8px;
+            overflow-wrap: anywhere
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0
+        }
+
+        button,
+        .btn {
+            padding: 12px 17px;
+            border: 0;
+            border-radius: 8px;
+            background: #0f4c81;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none
+        }
+
+        button.secondary {
+            background: #e2e8f0;
+            color: #334155
+        }
+
+        button:disabled {
+            opacity: .6
+        }
+
+        .output {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 14px;
+            border-radius: 9px;
+            min-height: 55px
+        }
+
+        .note {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.6
+        }
+
+        @keyframes pulse {
+            to {
+                transform: scale(1.13) rotate(5deg)
+            }
+        }
+
+        .animate {
+            animation: pulse .7s infinite alternate
+        }
+
+        input {
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 200px
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h2 style="color:white">🎙️ SignBridge AI – Teacher Mode</h2>
+        <a href="index.html">← Back to Home</a>
+    </header>
+
+    <main class="wrap">
+        <div class="card">
+
+            <h2>Teacher → Student | Speech-to-Sign Demo</h2>
+
+            <p>
+                Speak into the microphone or enter a sentence.
+                The prototype displays matching keywords and a demo animation.
+            </p>
+
+            <div class="stage">
+                <div class="avatar" id="avatar">🧑🏽‍🏫</div>
+                <strong id="label">Waiting for teacher speech...</strong>
+                <div class="gloss" id="gloss">ISL GLOSS: [ READY ]</div>
+            </div>
+
+            <div class="controls">
+                <button id="mic">🎤 Start Microphone</button>
+                <button class="secondary" id="demo">▶ Demo Lecture</button>
+            </div>
+
+            <div class="controls">
+                <input id="manual" placeholder="Example: Hello students, today we learn science">
+                <button id="convert">Convert Text</button>
+            </div>
+
+            <div class="output">
+                <b>Recognized Speech / Text:</b>
+                <div id="transcript">No speech received yet.</div>
+            </div>
+
+            <p class="note">
+                Prototype limitation: Keyword matching and emoji animation are demonstrations,
+                not accurate ISL translation or a 3D avatar.
+                Speech recognition usually requires Chrome/Edge and microphone permission
+                on localhost or HTTPS.
+            </p>
+
+        </div>
+    </main>
+
+    <script>
+        const dict = [
+            ["hello", "👋", "HELLO / GREET"],
+            ["welcome", "🙏", "WELCOME"],
+            ["science", "🔬", "SCIENCE"],
+            ["question", "❓", "QUESTION"],
+            ["understand", "💡", "UNDERSTAND"],
+            ["thank", "🤝", "THANK YOU"],
+            ["today", "📅", "TODAY"],
+            ["learn", "📖", "LEARN / STUDY"],
+            ["happy", "😊", "HAPPY"],
+            ["birthday", "🎂", "BIRTHDAY"],
+            ["help", "🆘", "HELP"]
+        ];
+
+        let timer = null;
+
+        function processText(text) {
+            if (!text.trim()) return;
+
+            document.getElementById("transcript").textContent = text;
+
+            const words = text.toLowerCase()
+                .replace(/[^a-z\s]/g, "")
+                .split(/\s+/)
+                .filter(Boolean);
+
+            document.getElementById("gloss").textContent =
+                "ISL GLOSS: [ " +
+                words.map(w => w.toUpperCase()).join(" • ") +
+                " ]";
+
+            const steps = [];
+
+            words.forEach(word => {
+                const match = dict.find(item => item[0] === word);
+
+                if (match) {
+                    steps.push({
+                        type: "emoji",
+                        value: match[1],
+                        label: match[2]
+                    });
+                } else {
+                    [...word.toUpperCase()].forEach(letter => {
+                        steps.push({
+                            type: "letter",
+                            value: letter,
+                            label: "Fingerspelling: " + letter
+                        });
+                    });
+                }
+            });
+
+            if (timer) clearInterval(timer);
+
+            let i = 0;
+            const avatar = document.getElementById("avatar");
+            const label = document.getElementById("label");
+
+            avatar.classList.add("animate");
+
+            function showNext() {
+                if (i >= steps.length) {
+                    clearInterval(timer);
+                    timer = null;
+                    avatar.classList.remove("animate");
+                    return;
+                }
+
+                const step = steps[i];
+
+                if (step.type === "letter") {
+                    const img = document.createElement("img");
+
+                    img.src = "ISL-Alphabet/" + step.value + ".jpeg";
+                    img.alt = step.label;
+                    img.style.width = "180px";
+                    img.style.height = "160px";
+                    img.style.objectFit = "contain";
+                    img.style.background = "white";
+                    img.style.borderRadius = "8px";
+
+                    img.onerror = function () {
+                        avatar.textContent = step.value;
+                    };
+
+                    avatar.replaceChildren(img);
+
+                } else {
+                    avatar.textContent = step.value;
+                }
+
+                label.textContent = "Prototype display: " + step.label;
+                i++;
+            }
+
+            showNext();
+            timer = setInterval(showNext, 1000);
+        }
+
+        document.getElementById("convert").onclick = () => {
+            processText(document.getElementById("manual").value);
+        };
+
+        document.getElementById("manual").onkeydown = e => {
+            if (e.key === "Enter") {
+                processText(e.target.value);
+            }
+        };
+
+        document.getElementById("demo").onclick = () => {
+            const s = "Hello students, today we will learn science";
+            document.getElementById("manual").value = s;
+            processText(s);
+        };
+
+        document.getElementById("mic").onclick = () => {
+            const SR = window.SpeechRecognition ||
+                window.webkitSpeechRecognition;
+
+            if (!SR) {
+                alert("Use Chrome or Edge for speech recognition.");
+                return;
+            }
+
+            const r = new SR();
+            r.lang = "en-IN";
+            r.continuous = false;
+            r.interimResults = false;
+
+            const b = document.getElementById("mic");
+            b.disabled = true;
+
+            r.onresult = e => {
+                const spoken = e.results[0][0].transcript;
+                document.getElementById("manual").value = spoken;
+                processText(spoken);
+            };
+
+            r.onerror = e => {
+                document.getElementById("transcript").textContent =
+                    "Microphone error: " + e.error;
+            };
+
+            r.onend = () => b.disabled = false;
+
+            try {
+                r.start();
+            } catch (e) {
+                b.disabled = false;
+                alert("Could not start microphone.");
+            }
+        };
+    </script>
+</body>
+
+</html>
